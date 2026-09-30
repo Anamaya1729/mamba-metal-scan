@@ -234,9 +234,11 @@ class MambaBlock(nn.Module):
             dt, B_t, C_t, Aneg = self._proj(x)
             a = torch.exp(-dt.unsqueeze(-1) * Aneg)
             b = dt.unsqueeze(-1) * B_t.unsqueeze(2) * x.unsqueeze(-1)
-            h = cache["h"] * a[:, 0] + b[:, 0]
+            h = cache["h"] * a[:, 0] + b[:, 0]         # (B, d_inner, d_state)
             cache["h"] = h
-            y = (h * C_t.unsqueeze(2)).sum(-1)
+            # h has no time axis here; give it one before meeting C_t
+            # (B, 1, 1, d_state), or batches broadcast against each other.
+            y = (h.unsqueeze(1) * C_t.unsqueeze(2)).sum(-1)
         else:
             xc = x.transpose(1, 2)
             x = F.silu(self.conv(xc)[:, :, :xc.shape[2]]).transpose(1, 2)
