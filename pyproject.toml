@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mamba-metal-scan"
+version = "0.1.0"
+description = "Fused Metal selective-scan kernels for Mamba on Apple silicon, forward and backward"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Anamaya Sharma" }]
+dependencies = ["torch>=2.8"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools]
+packages = ["mamba_metal"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
